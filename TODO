@@ -1,0 +1,10 @@
+TODO
+
+x Get basic scraping working
+x Scrape a header row?
+x User can input username and password
+x User can input dates
+- Basic argument validation?
+- Report if form submission fails? (i.e. dates invalid)
+- Put capybara behind an adapter layer?
+

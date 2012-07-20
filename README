@@ -1,0 +1,22 @@
+README
+
+The EasyPayMetroCard site requires JavaScript to obtain account activity.
+
+Setup Instructions
+1. Install capybara-webkit (see below)
+2. Run "bundle install"
+
+USAGE
+
+On a Mac, a convenient way to run the script is to pipe the result into pbcopy so that you can paste the information into an e-mail.
+
+capybara-webkit
+
+This requires capybara-webkit, which runs a headless WebKit browser that is capable of running JavaScript on pages.  To install capybara-webkit, you must first install Qt, a cross-platform development kit.  For instructions, see
+https://github.com/thoughtbot/capybara-webkit/wiki/Installing-Qt-and-compiling-capybara-webkit
+
+
+
+NOTES
+
+Capybara.javascript_driver is not defined *unless* you require 'capybara/dsl' ?!
