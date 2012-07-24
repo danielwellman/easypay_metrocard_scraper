@@ -49,7 +49,7 @@ class Scraper
 end
 
 if (ARGV.size != 4)
-  puts "Usage: ruby charges.rb <pin> <password> <start_date> <end_date>"
+  puts "Usage: ruby charges.rb <account_number> <password> <start_date> <end_date>"
   puts
   puts "- Date format is MM/DD/YYYY"
   exit(1)
