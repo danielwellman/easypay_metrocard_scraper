@@ -34,8 +34,14 @@ class Scraper
     # Print the header row
     puts find(:xpath, "//table[@id='StatementTable']/tbody/tr").text
 
+    @screenshot_number = 0
+
     begin
       payment_rows = all(:xpath, "//table[@id='StatementTable']/tbody/tr[contains(., 'Payment Received')]")
+      if (!payment_rows.empty?) 
+        page.driver.render "screenshot-#{@screenshot_number}.png"
+        @screenshot_number = @screenshot_number + 1
+      end
       payment_rows.each { |tr| puts tr.text }   
 
       if page.has_link? ("Next")
