@@ -5,6 +5,34 @@ require 'capybara'
 require 'capybara/dsl'
 require 'capybara-webkit'
 
+class ConsoleListener
+
+  def header_found(header_row)
+    puts header_row.text
+  end
+
+  def payments_found(payment_rows, page)
+    payment_rows.each { |tr| puts tr.text }    
+  end
+end
+
+class ScreenshotListener    
+  def initialize
+    @screenshot_number = 0
+  end
+
+  def header_found(header_row)
+    # Do nothing
+  end
+
+  def payments_found(payment_rows, page)
+    if (!payment_rows.empty?) 
+      page.driver.render "screenshot-#{@screenshot_number}.png"
+      @screenshot_number = @screenshot_number + 1
+    end
+  end
+end
+
 
 class Scraper
 
@@ -16,6 +44,11 @@ class Scraper
   Capybara.app_host = 'http://www.easypaymetrocard.com'
 
   include Capybara::DSL
+
+  def initialize
+    @listeners = [ConsoleListener.new, ScreenshotListener.new]
+  end
+
   def run(account_number, password, start_date, end_date)
     # Login
     visit("/")
@@ -31,18 +64,12 @@ class Scraper
     fill_in("HEndDate", :with => end_date)
     find("#Go1").click
 
-    # Print the header row
-    puts find(:xpath, "//table[@id='StatementTable']/tbody/tr").text
-
-    @screenshot_number = 0
+    header_row = find(:xpath, "//table[@id='StatementTable']/tbody/tr")
+    @listeners.each { |l| l.header_found(header_row) }
 
     begin
       payment_rows = all(:xpath, "//table[@id='StatementTable']/tbody/tr[contains(., 'Payment Received')]")
-      if (!payment_rows.empty?) 
-        page.driver.render "screenshot-#{@screenshot_number}.png"
-        @screenshot_number = @screenshot_number + 1
-      end
-      payment_rows.each { |tr| puts tr.text }   
+      @listeners.each { |l| l.payments_found(payment_rows, page) }
 
       if page.has_link? ("Next")
         click_link("Next")
