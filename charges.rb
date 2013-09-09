@@ -1,6 +1,7 @@
 #! /usr/bin/env ruby
 
 require 'rubygems'
+require 'io/console'
 require 'capybara'
 require 'capybara/dsl'
 require 'capybara-webkit'
@@ -81,12 +82,19 @@ class Scraper
   end
 end
 
-if (ARGV.size != 4)
-  puts "Usage: ruby charges.rb <account_number> <password> <start_date> <end_date>"
+if (ARGV.size != 3)
+  puts "Usage: ruby charges.rb <account_number> <start_date> <end_date>"
   puts
   puts "- Date format is MM/DD/YYYY"
+  puts "- Password will be requested at run-time"
   exit(1)
 end
 
+puts "Please enter your password (will be hidden):"
+password = STDIN.noecho(&:gets).chomp
+exit(1) if password.empty?
+
+puts "Scraping..."
 scraper = Scraper.new
-scraper.run(ARGV[0], ARGV[1], ARGV[2], ARGV[3])
+scraper.run(ARGV[0], password, ARGV[1], ARGV[2])
+puts "Done."
